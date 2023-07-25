@@ -9,6 +9,7 @@
 */
 
 const express = require('express');
+const bcrypt = require('bcrypt-nodejs')
 const app = express();
 
 app.use(express.json());
@@ -31,6 +32,14 @@ const database = {
             entries: 0,
             joined: new Date()
         }
+    ],
+    login:[
+        {
+            id:'987',
+            hash: "",
+            email: "polien@gmail.com"
+        }
+
     ]
 }
 
@@ -41,6 +50,14 @@ app.get('/',(req,res) => {
 
 //  step 1
 app.post('/signin', (req,res) => {
+
+    bcrypt.compare(req.body.password, "$2a$10$bLZwHfo8ux5LkCr4p2iWAOro.DvnI4Re6X7leWdRTSOJZlzt/ifhy", function(err, res) {
+        console.log("first login (should be true)", res);
+    });
+    bcrypt.compare("wrong_password", "$2a$10$bLZwHfo8ux5LkCr4p2iWAOro.DvnI4Re6X7leWdRTSOJZlzt/ifhy", function(err, res) {
+        console.log("second login (should be false)", res);
+    });
+
     if (req.body.email === database.user[0].email &&
         req.body.password === database.user[0].password ){
         res.json('log in success');
@@ -52,6 +69,12 @@ app.post('/signin', (req,res) => {
 //  step 2
 app.post('/register', (req,res) => {
     const {name, email, password} = req.body;
+
+    //  encrypt the password with bcrypt package
+    bcrypt.hash(password, null, null, function(err, hash) {
+        console.log(hash);
+    });
+
     database.user.push({
         id:'125',
         name: name,
@@ -103,6 +126,19 @@ app.post('/image', (req,res) => {
         res.status(400).json("not found");
     }
 })
+
+// //  encrypt the password with bcrypt package
+// bcrypt.hash("bacon", null, null, function(err, hash) {
+//     // Store hash in your password DB.
+// });
+
+// // Load hash from your password DB.
+// bcrypt.compare("bacon", hash, function(err, res) {
+//     // res == true
+// });
+// bcrypt.compare("veggies", hash, function(err, res) {
+//     // res = false
+// });
 
 app.listen(3000, ()=>{
     console.log("This app is running on port 3000.");
