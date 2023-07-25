@@ -51,6 +51,7 @@ app.get('/',(req,res) => {
 //  step 1
 app.post('/signin', (req,res) => {
 
+    // // Load hash from your password DB.
     bcrypt.compare(req.body.password, "$2a$10$bLZwHfo8ux5LkCr4p2iWAOro.DvnI4Re6X7leWdRTSOJZlzt/ifhy", function(err, res) {
         console.log("first login (should be true)", res);
     });
