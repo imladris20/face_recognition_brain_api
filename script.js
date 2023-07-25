@@ -25,7 +25,7 @@ const database = {
 }
 
 app.get('/',(req,res) => {
-    res.send("This is working!");
+    res.send(database.user);
 })
 
 app.post('/signin', (req,res) => {
@@ -37,11 +37,27 @@ app.post('/signin', (req,res) => {
     }
 })
 
+app.post('/register', (req,res) => {
+    const {name, email, password} = req.body;
+    database.user.push({
+        id:'125',
+        name: name,
+        email: email,
+        password: password,
+        entries: 0,
+        joined: new Date()
+    })
+
+    let length = database.user.length;
+    //  顯示給user看它剛剛push、新增進去的資料
+    res.json(database.user[length-1]);
+})
+
 app.listen(3000, ()=>{
     console.log("This app is running on port 3000.");
 });
 
-//  API Building Order
+//  API Building (End Points)Order
 /*
 --> res = this is working
 /signin --> POST = success or fail
