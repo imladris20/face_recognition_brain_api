@@ -63,7 +63,7 @@ app.post('/signin', (req,res) => {
 
     if (req.body.email === database.user[0].email &&
         req.body.password === database.user[0].password ){
-        res.json('log in success');
+        res.json(database.user[0]);
     } else {
         res.status(400).json('error logging in');
     }
@@ -111,7 +111,7 @@ app.get('/profile/:id', (req,res) => {
 })
 
 //  step 4
-app.post('/image', (req,res) => {
+app.put('/image', (req,res) => {
 
     const {id} = req.body;
 
