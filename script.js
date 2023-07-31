@@ -12,6 +12,25 @@ const express = require('express');
 const bcrypt = require('bcrypt-nodejs')
 const app = express();
 const cors = require('cors');
+const knex = require('knex');
+
+const sbdb = knex({
+    client: 'pg',
+    connection: {
+        //  localhost 的網址就是127.0.0.1
+        host : '127.0.0.1',
+        port : 5432,
+        user : 'postgres',
+        password : 'love0313',
+        database : 'smart-brain'
+    }
+});
+
+console.log(sbdb.select('*').from('users'));
+
+sbdb.select('*').from('users').then(data => {
+    console.log(data);
+});
 
 app.use(express.json());
 app.use(cors());
@@ -78,18 +97,30 @@ app.post('/register', (req,res) => {
         console.log(hash);
     });
 
-    database.user.push({
-        id:'125',
-        name: name,
-        email: email,
-        password: password,
-        entries: 0,
-        joined: new Date()
-    })
+    // database.user.push({
+    //     id:'125',
+    //     name: name,
+    //     email: email,
+    //     password: password,
+    //     entries: 0,
+    //     joined: new Date()
+    // })
 
-    let length = database.user.length;
+    sbdb('users')
+        .returning('*')
+        .insert({
+            email: email,
+            name: name,
+            joined: new Date()
+        })
+        .then( user => {
+            res.json(user[0]);
+        })
+        .catch(err => res.status(400).json('unable to register'));
+
+    // let length = database.user.length;
     //  顯示給user看它剛剛push、新增進去的資料
-    res.json(database.user[length-1]);
+    // res.json(database.user[length-1]);
 })
 
 //  step 3
