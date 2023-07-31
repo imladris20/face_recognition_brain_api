@@ -28,7 +28,8 @@ const sbdb = knex({
     }
 });
 
-console.log(sbdb.select('*').from('users'));
+//  testing if knex works fine
+// console.log(sbdb.select('*').from('users'));
 
 sbdb.select('*').from('users').then(data => {
     console.log(data);
@@ -37,7 +38,7 @@ sbdb.select('*').from('users').then(data => {
 app.use(express.json());
 app.use(cors());
 
-const database = {
+/* const database = {
     user: [
         {
             id:'123',
@@ -64,12 +65,12 @@ const database = {
         }
 
     ]
-}
+} */
 
 //  step 0
-app.get('/',(req,res) => {
-    res.send(database.user);
-})
+// app.get('/',(req,res) => {
+//     res.send(database.user);
+// })
 
 //  step 1
 app.post('/signin', (req,res) => {
@@ -82,12 +83,30 @@ app.post('/signin', (req,res) => {
     //     console.log("second login (should be false)", res);
     // });
 
-    if (req.body.email === database.user[0].email &&
+/*     if (req.body.email === database.user[0].email &&
         req.body.password === database.user[0].password ){
         res.json(database.user[0]);
     } else {
         res.status(400).json('error logging in');
-    }
+    } */
+
+    sbdb.select('email','hash').from('login')
+        .where('email','=',req.body.email)
+        .then(data => {
+            const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
+            if(isValid){
+                return sbdb.select('*').from('users')
+                    .where('email','=',req.body.email)
+                    .then(validUserInfo => {
+                        console.log(validUserInfo);
+                        res.json(validUserInfo[0]);
+                    })
+                    .catch(err => res.status(400).json('Password is correct, but somehow unable to load the user'))
+            } else {
+                res.status(400).json('Invalid password');
+            }
+        })
+        .catch( err => res.status(400).json('Invalid user email'));
 })
 
 //  step 2
