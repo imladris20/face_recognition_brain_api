@@ -10,6 +10,8 @@
 
 const express = require('express');
 const bcrypt = require('bcrypt-nodejs')
+// https://www.npmjs.com/package/bcrypt-nodejs
+
 const app = express();
 const cors = require('cors');
 const knex = require('knex');
@@ -92,10 +94,34 @@ app.post('/signin', (req,res) => {
 app.post('/register', (req,res) => {
     const {name, email, password} = req.body;
 
+    var hash = bcrypt.hashSync(password);
+
+    sbdb.transaction(trx => {
+        trx.insert({
+            hash: hash,
+            email: email
+        })
+            .into('login')
+            .returning('email')
+            .then(justRegisteredEmail => {
+                return trx('users').returning('*')
+                    .insert({
+                        email: justRegisteredEmail[0].email,
+                        name: name,
+                        joined: new Date()
+                    })
+                    .then( user => {
+                        res.json(user[0]);
+                    })                    
+            })
+            .then(trx.commit)
+            .catch(trx.rollback)        
+    })
+    .catch(err => res.status(400).json('unable to register'));
     //  encrypt the password with bcrypt package
-    bcrypt.hash(password, null, null, function(err, hash) {
+/*     bcrypt.hash(password, null, null, function(err, hash) {
         console.log(hash);
-    });
+    }); */
 
     // database.user.push({
     //     id:'125',
@@ -105,18 +131,6 @@ app.post('/register', (req,res) => {
     //     entries: 0,
     //     joined: new Date()
     // })
-
-    sbdb('users')
-        .returning('*')
-        .insert({
-            email: email,
-            name: name,
-            joined: new Date()
-        })
-        .then( user => {
-            res.json(user[0]);
-        })
-        .catch(err => res.status(400).json('unable to register'));
 
     // let length = database.user.length;
     //  顯示給user看它剛剛push、新增進去的資料
@@ -198,4 +212,3 @@ app.put('/image', (req,res) => {
 app.listen(3000, ()=>{
     console.log("This app is running on port 3000.");
 });
-
