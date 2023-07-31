@@ -127,18 +127,28 @@ app.post('/register', (req,res) => {
 app.get('/profile/:id', (req,res) => {
     
     const {id} = req.params
-    let found = false;
+    // let found = false;
 
-    database.user.forEach(user => {
-        if(user.id === id){
-            found = true;
-            return res.json(user);
-        }
-    })
+    // database.user.forEach(user => {
+    //     if(user.id === id){
+    //         found = true;
+    //         return res.json(user);
+    //     }
+    // })
 
-    if(found === false){
-        res.status(400).json("not found");
-    }
+    // if(found === false){
+    //     res.status(400).json("not found");
+    // }
+
+    sbdb.select('*').from('users').where({id})
+        .then(user => {
+            if(user.length){
+                res.json(user[0]);
+            } else {
+                res.status(400).json('Not found');
+            }
+        })
+        .catch(err => res.status(400).json('error getting user'));
 })
 
 //  step 4
