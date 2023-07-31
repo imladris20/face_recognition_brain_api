@@ -156,7 +156,15 @@ app.put('/image', (req,res) => {
 
     const {id} = req.body;
 
-    let found = false;
+    sbdb('users').where('id', '=', id)
+    .increment('entries', 1)
+    .returning('entries')
+    .then(entries => {
+        res.json(entries[0].entries);
+    })
+    .catch(err => res.status(400).json('unable to get entries'))
+
+/*     let found = false;
 
     database.user.forEach(user => {
         if(user.id === id){
@@ -168,7 +176,10 @@ app.put('/image', (req,res) => {
 
     if(found === false){
         res.status(400).json("not found");
-    }
+    } */
+
+
+
 })
 
 // //  encrypt the password with bcrypt package
