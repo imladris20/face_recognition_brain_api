@@ -15,6 +15,7 @@ const bcrypt = require('bcrypt-nodejs')
 const app = express();
 const cors = require('cors');
 const knex = require('knex');
+const register = require('./controllers/register');
 
 const sbdb = knex({
     client: 'pg',
@@ -28,13 +29,13 @@ const sbdb = knex({
     }
 });
 
-//  testing if knex works fine
-// console.log(sbdb.select('*').from('users'));
+//  32-36行若uncomment掉可以檢查knex有沒有運作正常
+//  console.log(sbdb.select('*').from('users'));
+//  sbdb.select('*').from('users').then(data => {
+//     console.log(data);
+//  });
 
-sbdb.select('*').from('users').then(data => {
-    console.log(data);
-});
-
+//  引入express功能
 app.use(express.json());
 app.use(cors());
 
@@ -110,51 +111,8 @@ app.post('/signin', (req,res) => {
 })
 
 //  step 2
-app.post('/register', (req,res) => {
-    const {name, email, password} = req.body;
-
-    var hash = bcrypt.hashSync(password);
-
-    sbdb.transaction(trx => {
-        trx.insert({
-            hash: hash,
-            email: email
-        })
-            .into('login')
-            .returning('email')
-            .then(justRegisteredEmail => {
-                return trx('users').returning('*')
-                    .insert({
-                        email: justRegisteredEmail[0].email,
-                        name: name,
-                        joined: new Date()
-                    })
-                    .then( user => {
-                        res.json(user[0]);
-                    })                    
-            })
-            .then(trx.commit)
-            .catch(trx.rollback)        
-    })
-    .catch(err => res.status(400).json('unable to register'));
-    //  encrypt the password with bcrypt package
-/*     bcrypt.hash(password, null, null, function(err, hash) {
-        console.log(hash);
-    }); */
-
-    // database.user.push({
-    //     id:'125',
-    //     name: name,
-    //     email: email,
-    //     password: password,
-    //     entries: 0,
-    //     joined: new Date()
-    // })
-
-    // let length = database.user.length;
-    //  顯示給user看它剛剛push、新增進去的資料
-    // res.json(database.user[length-1]);
-})
+//  把script的變數如sbdb, bcrypt 傳進去function裡面的動作叫做dependency injection
+app.post('/register', (req,res) => {register.registrationFunction(req,res,sbdb,bcrypt)});
 
 //  step 3
 app.get('/profile/:id', (req,res) => {
@@ -229,5 +187,5 @@ app.put('/image', (req,res) => {
 // });
 
 app.listen(3000, ()=>{
-    console.log("This app is running on port 3000.");
+    console.log("Face recognition brain API is running on port 3000.");
 });
