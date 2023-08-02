@@ -43,6 +43,9 @@ const sbdb = knex({
 app.use(express.json());
 app.use(cors());
 
+//  step 0
+app.get('/', (req,res) => {res.send (database.users) });
+
 //  step 1
 app.post('/signin', (req,res) => {signin.signinFunction(req, res, sbdb, bcrypt)});
 
