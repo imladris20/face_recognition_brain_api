@@ -58,6 +58,7 @@ app.get('/profile/:id', (req,res) => {profile.profileFunction(req,res, sbdb)});
 
 //  step 4
 app.put('/image', (req,res) => {image.imageFunction(req,res, sbdb)});
+app.post('/imageurl', (req,res) => {image.handleAPICall(req,res)});
 
 app.listen(3000, ()=>{
     console.log("Face recognition brain API is running on port 3000.");
