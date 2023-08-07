@@ -45,7 +45,7 @@ app.use(express.json());
 app.use(cors());
 
 //  step 0
-app.get('/', (req,res) => {res.send (database.users) });
+app.get('/', (req,res) => {res.send ("It is working.") });
 
 //  step 1
 app.post('/signin', (req,res) => {signin.signinFunction(req, res, sbdb, bcrypt)});
@@ -63,7 +63,7 @@ app.post('/imageurl', (req,res) => {image.handleAPICall(req,res)});
 
 const PORT = process.env.PORT;
 
-app.listen(PORT, ()=>{
+app.listen(PORT || 3000, ()=>{
     console.log(`Face recognition brain API is running on port ${PORT}.`);
 });
 
