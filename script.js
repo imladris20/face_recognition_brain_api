@@ -24,12 +24,13 @@ const image = require('./controllers/image')
 const sbdb = knex({
     client: 'pg',
     connection: {
-        //  localhost 的網址就是127.0.0.1
-        host : '127.0.0.1',
+        connectionString: process.env.DATABASE_URL,
+        ssl : {rejectUnauthorized: false},
+        host: process.env.DATABASE_HOST,
         port : 5432,
-        user : 'postgres',
-        password : 'love0313',
-        database : 'smart-brain'
+        user : process.env.DATABASE_USER,
+        password : process.env.DATABASE_PASSWORD,
+        database : process.env.DATABASE_DB
     }
 });
 
@@ -60,6 +61,10 @@ app.get('/profile/:id', (req,res) => {profile.profileFunction(req,res, sbdb)});
 app.put('/image', (req,res) => {image.imageFunction(req,res, sbdb)});
 app.post('/imageurl', (req,res) => {image.handleAPICall(req,res)});
 
-app.listen(3000, ()=>{
-    console.log("Face recognition brain API is running on port 3000.");
+const PORT = process.env.PORT;
+
+app.listen(PORT, ()=>{
+    console.log(`Face recognition brain API is running on port ${PORT}.`);
 });
+
+console.log(PORT);
