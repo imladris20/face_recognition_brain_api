@@ -21,7 +21,7 @@ const signin = require('./controllers/signin');
 const profile = require('./controllers/profile');
 const image = require('./controllers/image')
 
-const sbdb = knex({
+/* const sbdb = knex({
     client: 'pg',
     connection: {
         connectionString: process.env.DATABASE_URL,
@@ -32,7 +32,32 @@ const sbdb = knex({
         password : process.env.DATABASE_PASSWORD,
         database : process.env.DATABASE_DB
     }
+}); */
+
+const sbdb = knex({
+    client: 'pg',
+    connection: {
+        connectionString: 'postgres://face_recognition_brain_database_user:eOmWIXU0Nwt1M3KdRLngZjdKoqVeDzz9@dpg-cj887akl975s7384ua30-a.singapore-postgres.render.com/face_recognition_brain_database',
+        ssl : {rejectUnauthorized: false},
+        host: 'dpg-cj887akl975s7384ua30-a',
+        port : 5432,
+        user : 'face_recognition_brain_database_user',
+        password : 'eOmWIXU0Nwt1M3KdRLngZjdKoqVeDzz9',
+        database : 'face_recognition_brain_database'
+    }
 });
+
+/* const sbdb = knex({
+    client: 'pg',
+    connection: {
+        //  localhost 的網址就是127.0.0.1
+        host : '127.0.0.1',
+        port : 5432,
+        user : 'postgres',
+        password : 'love0313',
+        database : 'smart-brain'
+    }
+}); */
 
 //  32-36行若uncomment掉可以檢查knex有沒有運作正常
 //  console.log(sbdb.select('*').from('users'));
@@ -61,10 +86,14 @@ app.get('/profile/:id', (req,res) => {profile.profileFunction(req,res, sbdb)});
 app.put('/image', (req,res) => {image.imageFunction(req, res, sbdb)});
 app.post('/imageurl', (req,res) => {image.handleAPICall(req, res)});
 
-const PORT = process.env.PORT;
+// const PORT = process.env.PORT;
 
-app.listen(PORT || 3000, ()=>{
-    console.log(`Face recognition brain API is running on port ${PORT}.`);
+// // app.listen(PORT || 3000, ()=>{
+// //     console.log(`Face recognition brain API is running on port ${PORT}.`);
+// // });
+
+// // console.log(PORT);
+
+app.listen(3000, ()=>{
+    console.log("Face recognition brain API is running on port 3000.");
 });
-
-console.log(PORT);
