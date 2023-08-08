@@ -63,8 +63,8 @@ app.post('/imageurl', (req,res) => {image.handleAPICall(req, res)});
 
 const PORT = process.env.PORT;
 
-app.listen(PORT || 3000, ()=>{
+app.listen(PORT, ()=>{
     console.log(`Face recognition brain API is running on port ${PORT}.`);
 });
 
-console.log(PORT);
+console.log(`Face recognition brain API is running on port ${PORT}.`);
