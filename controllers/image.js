@@ -1,8 +1,3 @@
-const app = express();
-const cors = require('cors');
-app.use(express.json());
-app.use(cors());
-
 const MODEL_ID = 'face-detection';
 const MODEL_VERSION_ID = '6dc7e46bc9124c5c8824be4822abe105';
 
