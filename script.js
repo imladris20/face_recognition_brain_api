@@ -61,10 +61,8 @@ app.get('/profile/:id', (req,res) => {profile.profileFunction(req,res, sbdb)});
 app.put('/image', (req,res) => {image.imageFunction(req, res, sbdb)});
 app.post('/imageurl', (req,res) => {image.handleAPICall(req, res)});
 
-const PORT = process.env.PORT;
+// const PORT = process.env.PORT;
 
-app.listen(PORT, ()=>{
-    console.log(`Face recognition brain API is running on port ${PORT}.`);
+app.listen(process.env.PORT || 3000, ()=>{
+    console.log(`Face recognition brain API is running on port ${process.env.PORT}.`);
 });
-
-console.log(`Face recognition brain API is running on port ${PORT}.`);
