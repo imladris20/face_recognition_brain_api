@@ -4,6 +4,7 @@ const MODEL_VERSION_ID = '6dc7e46bc9124c5c8824be4822abe105';
 //  20-55行是Clarifai API 的模板code
 const returnRequestOptions = (imageUrl) => {
   
+  console.log("check url: ", imageUrl);
   const PAT = 'e429cbb5db254b2482b6ebbe4d76f656';
   const USER_ID = 'imladris20';       
   const APP_ID = 'face_recognition_brain';

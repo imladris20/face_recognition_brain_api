@@ -58,8 +58,8 @@ app.post('/register', (req,res) => {register.registrationFunction(req,res,sbdb,b
 app.get('/profile/:id', (req,res) => {profile.profileFunction(req,res, sbdb)});
 
 //  step 4
-app.put('/image', (req,res) => {image.imageFunction(req,res, sbdb)});
-app.post('/imageurl', (req,res) => {image.handleAPICall(req,res)});
+app.put('/image', (req,res) => {image.imageFunction(req, res, sbdb)});
+app.post('/imageurl', (req,res) => {image.handleAPICall(req, res)});
 
 const PORT = process.env.PORT;
 
